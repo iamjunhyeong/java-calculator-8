@@ -14,6 +14,10 @@ public class Parse {
     }
 
     public String[] parse(String str) {
+        if (str == null || str.isBlank()) {
+            return new String[0];
+        }
+
         str = str
                 .replace("\\n", "\n")
                 .replace("\\t", "\t")
@@ -34,11 +38,21 @@ public class Parse {
     public ArrayList<Integer> toIntArray(String[] tokens) {
         ArrayList<Integer> numbers = new ArrayList<>();
         for (String token : tokens) {
+            token = token.trim();
+            if (token.isEmpty()) continue;
+
+            int num;
             try {
-                numbers.add(Integer.parseInt(token));
+                num = Integer.parseInt(token);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid number format: " + token);
+                throw new IllegalArgumentException("숫자가 아닌 값이 포함되어 있습니다: " + token);
             }
+
+            if (num < 0) {
+                throw new IllegalArgumentException("음수는 허용되지 않습니다: " + num);
+            }
+
+            numbers.add(num);
         }
         return numbers;
     }
